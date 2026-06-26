@@ -67,6 +67,24 @@ Actions → New repository secret):
 - **`ANTHROPIC_API_KEY`** — an Anthropic API key used to run Claude Code
   headlessly for the research and build steps.
 
+It also sends a same-day email summary once both tracks finish (success or
+failure), using these secrets:
+
+- **`EMAIL_USER`** — a Gmail address used as the SMTP login (and as the
+  default recipient if `EMAIL_TO` isn't set).
+- **`EMAIL_PASS`** — a Gmail **App Password** for that address (not your
+  normal Gmail password — requires 2-Step Verification enabled on the
+  account, then generate one at myaccount.google.com/apppasswords).
+- **`EMAIL_TO`** *(optional)* — a different recipient address, if you don't
+  want the summary sent back to `EMAIL_USER` itself.
+
+The summary is built from `log/dashboard.md`'s rows for the current date —
+it doesn't re-derive anything, so it always matches what's logged. Note the
+dashboard doesn't track a one-line idea description, so the email reports
+status, the Latin word/project name (parsed from the repo name), the repo
+and Pages URLs, gate results, and notes — but not a separate description
+field.
+
 See the setup walkthrough (shared separately / in the PR description for
 this scaffold) for exact scopes and step-by-step instructions.
 
