@@ -1,0 +1,110 @@
+name: Daily Project Builder
+
+on:
+  schedule:
+    # 13:00 UTC daily
+    - cron: "0 13 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+env:
+  # Upper bound on Claude Code turns per invocation, used for both the
+  # research step and the build step, to control cost/time.
+  CLAUDE_MAX_TURNS: "30"
+
+jobs:
+  build-serious:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      TRACK: serious
+      PROMPT_FILE: prompts/build-serious.md
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Claude Code CLI and gitleaks
+        run: |
+          npm install -g @anthropic-ai/claude-code
+          GITLEAKS_VERSION="8.18.4"
+          curl -sSL -o gitleaks.tar.gz \
+            "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
+          tar -xzf gitleaks.tar.gz gitleaks
+          sudo mv gitleaks /usr/local/bin/gitleaks
+          rm gitleaks.tar.gz
+          gitleaks version
+
+      - name: Authenticate gh CLI
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          echo "${GH_TOKEN}" | gh auth login --with-token
+          gh auth status
+
+      - name: Run research + build + gate + publish
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          set -euo pipefail
+          bash scripts/run-track.sh
+
+      - name: Upload run artifact on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: serious-track-failure-${{ github.run_id }}
+          path: /tmp/daily-build-serious/
+          retention-days: 7
+
+  build-fun:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      TRACK: fun
+      PROMPT_FILE: prompts/build-fun.md
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Claude Code CLI and gitleaks
+        run: |
+          npm install -g @anthropic-ai/claude-code
+          GITLEAKS_VERSION="8.18.4"
+          curl -sSL -o gitleaks.tar.gz \
+            "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
+          tar -xzf gitleaks.tar.gz gitleaks
+          sudo mv gitleaks /usr/local/bin/gitleaks
+          rm gitleaks.tar.gz
+          gitleaks version
+
+      - name: Authenticate gh CLI
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          echo "${GH_TOKEN}" | gh auth login --with-token
+          gh auth status
+
+      - name: Run research + build + gate + publish
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          set -euo pipefail
+          bash scripts/run-track.sh
+
+      - name: Upload run artifact on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fun-track-failure-${{ github.run_id }}
+          path: /tmp/daily-build-fun/
+          retention-days: 7
