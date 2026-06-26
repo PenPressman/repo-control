@@ -39,11 +39,10 @@ jobs:
           rm gitleaks.tar.gz
           gitleaks version
 
-      - name: Authenticate gh CLI
+      - name: Verify gh CLI authentication
         env:
           GH_TOKEN: ${{ secrets.GH_PAT }}
         run: |
-          echo "${GH_TOKEN}" | gh auth login --with-token
           gh auth status
 
       - name: Run research + build + gate + publish
@@ -86,11 +85,10 @@ jobs:
           rm gitleaks.tar.gz
           gitleaks version
 
-      - name: Authenticate gh CLI
+      - name: Verify gh CLI authentication
         env:
           GH_TOKEN: ${{ secrets.GH_PAT }}
         run: |
-          echo "${GH_TOKEN}" | gh auth login --with-token
           gh auth status
 
       - name: Run research + build + gate + publish
