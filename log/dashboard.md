@@ -13,3 +13,4 @@ One row per project per day, appended automatically by the
 | 2026-06-27 | serious | n/a | n/a | pass | pass | fail | n/a | attribution-scan failed. No repo created. |
 | 2026-06-27 | fun | scintilla-2026-06-27 | https://github.com/PenPressman/scintilla-2026-06-27 | pass | pass | pass | https://PenPressman.github.io/scintilla-2026-06-27/ | OK |
 | 2026-06-28 | fun | n/a | n/a | pass | pass | fail | n/a | attribution-scan failed. No repo created. |
+| 2026-06-28 | serious | n/a | n/a | pass | pass | fail | n/a | attribution-scan failed. No repo created. |
