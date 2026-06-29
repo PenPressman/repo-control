@@ -106,3 +106,42 @@ jobs:
           name: fun-track-failure-${{ github.run_id }}
           path: /tmp/daily-build-fun/
           retention-days: 7
+
+  notify:
+    needs: [build-serious, build-fun]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - name: Pull latest dashboard
+        # build-serious/build-fun may have each pushed a dashboard commit
+        # after this job's checkout was triggered; pull to see both.
+        run: git pull origin ${{ github.ref_name }}
+
+      - name: Build email summary
+        id: summary
+        run: |
+          DATE_STR=$(date -u +%Y-%m-%d)
+          bash scripts/build-email-summary.sh log/dashboard.md "$DATE_STR" > /tmp/summary.txt
+          {
+            echo "date=${DATE_STR}"
+            echo "body<<EOF"
+            cat /tmp/summary.txt
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Email daily summary
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.EMAIL_USER }}
+          password: ${{ secrets.EMAIL_PASS }}
+          subject: "Daily Project Builder — ${{ steps.summary.outputs.date }}"
+          to: ${{ secrets.EMAIL_TO || secrets.EMAIL_USER }}
+          from: ${{ secrets.EMAIL_USER }}
+          body: ${{ steps.summary.outputs.body }}
