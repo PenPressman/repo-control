@@ -16,3 +16,4 @@ One row per project per day, appended automatically by the
 | 2026-06-28 | serious | n/a | n/a | pass | pass | fail | n/a | attribution-scan failed. No repo created. |
 | 2026-06-29 | fun | germen-2026-06-29 | https://github.com/PenPressman/germen-2026-06-29 | pass | pass | pass | https://PenPressman.github.io/germen-2026-06-29/ | OK |
 | 2026-06-29 | serious | custos-2026-06-29 | https://github.com/PenPressman/custos-2026-06-29 | pass | pass | pass |  | OK |
+| 2026-06-30 | serious | mensura-2026-06-30 | https://github.com/PenPressman/mensura-2026-06-30 | pass | pass | pass |  | OK |
