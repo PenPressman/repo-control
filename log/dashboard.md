@@ -19,3 +19,4 @@ One row per project per day, appended automatically by the
 | 2026-06-30 | serious | mensura-2026-06-30 | https://github.com/PenPressman/mensura-2026-06-30 | pass | pass | pass |  | OK |
 | 2026-06-30 | fun | fabrica-2026-06-30 | https://github.com/PenPressman/fabrica-2026-06-30 | pass | pass | pass | https://PenPressman.github.io/fabrica-2026-06-30/ | OK |
 | 2026-07-01 | fun | stella-2026-07-01 | https://github.com/PenPressman/stella-2026-07-01 | pass | pass | pass | https://PenPressman.github.io/stella-2026-07-01/ | OK |
+| 2026-07-01 | serious | n/a | n/a | pass | pass | fail | n/a | attribution-scan failed. No repo created. |
